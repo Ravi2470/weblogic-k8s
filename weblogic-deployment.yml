@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp2
+  template:
+    metadata:
+      labels:
+        app: webapp2
+    spec:
+      containers:
+      - name: webapp
+        image: ravis2470/weblogic:7
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 7001
+        - containerPort: 9002
+        volumeMounts:
+        - name: domain-configmap
+          mountPath: /u01/oracle/properties
+        - name: game-config
+          mountPath: /u01/oracle/user_projects/domains/base_domain/autodeploy 
+      volumes:
+      - name: domain-configmap
+        configMap:
+          name: domain-configmap
+      - name: game-config
+        configMap:
+          name: game-config
+        

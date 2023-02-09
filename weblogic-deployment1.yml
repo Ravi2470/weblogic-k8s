@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weblogicapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weblogicapp
+  template:
+    metadata:
+      labels:
+        app: weblogicapp
+    spec:
+      containers:
+      - name: weblogicapp
+        image: ravis2470/weblogic:2
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+        ports:
+        - containerPort: 7001
+        - containerPort: 9002
+        volumeMounts:
+        - name: domain-config
+          mountPath: /u01/oracle/properties
+        - name: myapp-vol01
+          mountPath: /u01/oracle/user_projects/domains/base_domain/autodeploy
+      volumes:
+      - name: domain-config
+        configMap:
+          name: domain-configmap
+      - name: myapp-vol01
+        persistentVolumeClaim:
+          claimName: myapp-vol01 

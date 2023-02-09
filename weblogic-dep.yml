@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: ravis2470/weblogic:2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 7001
+        - containerPort: 9002
+        volumeMounts:
+        - name: domain-config
+          mountPath: /u01/oracle/properties
+          readOnly: true
+      volumes:
+      - name: domain-config
+        configMap:
+          name: domain-configmap
